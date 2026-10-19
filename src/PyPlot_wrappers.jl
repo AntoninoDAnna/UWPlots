@@ -1,14 +1,16 @@
 ## symbol accepted by PyPlot, no more that one alias allowed
-@enumclass PlotSymbols color marker linestyle fillstyle capsize alpha zorder label
+@enumclass PlotSymbols color marker linestyle fillstyle capsize alpha zorder label facecolors markerfacecolor
 
 const alias_symbols = Dict(PlotSymbols.color  => (:c, :color),
                            PlotSymbols.marker => (:m, :marker),
                            PlotSymbols.linestyle => (:ls, :linestyle),
                            PlotSymbols.fillstyle => (:fs, :fillstyle),
+                           PlotSymbols.markerfacecolor=>(:mfc, :markerfacecolor, :fc, :facecolors),
                            PlotSymbols.capsize  => (:cs, :capsize),
                            PlotSymbols.alpha  => (:a, :alpha),
                            PlotSymbols.zorder => (:zorder,),
-                           PlotSymbols.label => (:label,))
+                           PlotSymbols.label => (:label,),
+                           PlotSymbols.facecolors => (:fc,:facecolors, :mfc, :markerfacecolor))
 
 const allowed_symbol = collect(Iterators.flatten(values(alias_symbols)))
 
@@ -19,7 +21,9 @@ const symbol_to_pyplot = Dict(PlotSymbols.color => :color,
                               PlotSymbols.capsize => :capsize,
                               PlotSymbols.alpha => :alpha,
                               PlotSymbols.zorder => :zorder,
-                              PlotSymbols.label => :label)
+                              PlotSymbols.label => :label,
+                              PlotSymbols.facecolors => :facecolors,
+                              PlotSymbols.markerfacecolor=> :markerfacecolor,)
 
 const default_vals = Dict(PlotSymbols.color => nothing,
                           PlotSymbols.marker=> next_marker,
@@ -28,12 +32,15 @@ const default_vals = Dict(PlotSymbols.color => nothing,
                           PlotSymbols.capsize=> 5.0,
                           PlotSymbols.alpha=> 1.0,
                           PlotSymbols.zorder=> nothing,
-                          PlotSymbols.label => nothing)
+                          PlotSymbols.label => nothing,
+                          PlotSymbols.facecolors=> nothing,
+                          PlotSymbols.markerfacecolor=> nothing)
 
 const errorbar_sym = (PlotSymbols.color,
                       PlotSymbols.marker,
                       PlotSymbols.linestyle,
                       PlotSymbols.fillstyle,
+                      PlotSymbols.markerfacecolor,
                       PlotSymbols.capsize,
                       PlotSymbols.alpha,
                       PlotSymbols.zorder,
@@ -51,8 +58,8 @@ const scatter_sym = (PlotSymbols.color,
                      PlotSymbols.marker,
                      PlotSymbols.alpha,
                      PlotSymbols.zorder,
-                     PlotSymbols.label)
-
+                     PlotSymbols.label,
+                     PlotSymbols.facecolors,)
 
 const fillbetween_sym = (PlotSymbols.color,
                          PlotSymbols.alpha,
@@ -66,7 +73,7 @@ validate_pyobs(p::PyObj, type) =  pyisinstance(p,type) || throw(ArgumentError(La
 
 hassym(kw,s) = any(x->haskey(kw,x), alias_symbols[s])
 
-    __get_def__(x) = x
+__get_def__(x) = x
 __get_def__(f::Function) = f()
 get_default(s) = __get_def__(default_vals[s])
 

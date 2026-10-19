@@ -8,8 +8,7 @@ end
 _fill_between(ax::PyObj, xdata::AbstractVector{<:Real}, ydata::AbstractVector{<:Real}; wpm = Dict{Int64,Vector{Float64}}(), kw...) =
     __unsafe_plot_data(ax::PyObj,xdata,ydata; kw..., linestyle="-", marker="")
 
-__unsafe_plot_function(ax::PyObj, xdata::AbstractVector, F::Function; k...) = __fill_between(ax,xdata,F(xdata); kw...)
-
+__unsafe_plot_function(ax::PyObj, xdata::AbstractVector, F::Function; kw...) = _fill_between(ax,xdata,F(xdata); kw...)
 __unsafe_plot_function(ax::PyObj, xdata, ydata; kw...) = _fill_between(ax::PyObj, xdata, ydata; kw...)
 
 @doc raw"""

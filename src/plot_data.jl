@@ -42,21 +42,21 @@ end
 
 plot the data onto `ax`. `ax` must be a valid `Axes` object according to `PyCall.pyisinstance`. If `ax` is not provided, `PyPlot.gca()` is called.
 """
-function plot_data(ax::PyObj, xdata, ydata; wpm=Dict{Int64, Vector{Float64}}(), kw...)
+function plot_data(ax::PyObj, xdata::AbstractVector{T}, ydata::AbstractVector{U}; wpm=Dict{Int64, Vector{Float64}}(), kw...) where {T,U}
     validate_pyobs(ax, MPL_AXES)
     __unsafe_plot_data(ax, xdata, ydata;wpm=wpm, kw...)
 end
 
-function plot_data(ax::PyObj, ydata; wpm=Dict{Int64, Vector{Float64}}(), kw...)
+function plot_data(ax::PyObj, ydata::AbstractVector{T}; wpm=Dict{Int64, Vector{Float64}}(), kw...) where T
     validate_pyobs(ax, MPL_AXES)
     __unsafe_plot_data(ax::PyObj, eachindex(ydata), ydata; wpm=wpm, kw...)
 end
 
-plot_data(xdata, ydata; k...) = __unsafe_plot_data(gca(), xdata, ydata; k...)
+plot_data(xdata::AbstractVector{T}, ydata::AbstractVector{U}; k...) where {T,U} = __unsafe_plot_data(gca(), xdata, ydata; k...)
 
-plot_data(ydata; k...) = __unsafe_plot_data(gca(), eachindex(ydata), ydata; k...)
+plot_data(ydata::AbstractVector{T}; k...) where T = __unsafe_plot_data(gca(), eachindex(ydata), ydata; k...)
 
-function plot_data(ax, xdata, ydata,                          r::Vector{UnitRange{Int64}}; kw...)
+function plot_data(ax::PyObj, xdata::AbstractVector{T}, ydata::AbstractVector{U},r::Vector{UnitRange{Int64}}; kw...) where {T,U}
     validate_pyobs(ax, MPL_AXES)
     par = get_plot_parameters(kw,plot_sym)
     for (i,_r) in enumerate(r)
